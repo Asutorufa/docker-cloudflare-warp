@@ -1,0 +1,23 @@
+[Unit]
+Description=docker-warp
+Requires=podman-user-wait-network-online.service
+
+[Container]
+Image=localhost/docker-warp:latest
+Environment=CLOUDFLARE_ZEROTRUST=true
+PublishPort=50052:50051/tcp
+PublishPort=1082:1082/tcp
+PublishPort=1082:1082/udp
+AddDevice=/dev/net/tun
+AddCapability=NET_ADMIN
+Sysctl=net.ipv6.conf.all.disable_ipv6=0
+Sysctl=net.ipv4.conf.all.src_valid_mark=1
+Volume=/home/asutorufa/Documents/Programming/yuhaiin/yuhaiin_linux_amd64v3:/usr/bin/yuhaiin
+Volume=/home/asutorufa/Documents/Programming/docker-cloudflare-warp/yuhaiin-data:/usr/bin/config
+Volume=/home/asutorufa/Documents/Programming/docker-cloudflare-warp/data:/var/lib/cloudflare-warp
+
+# podman run -d -it --rm --name docker-warp -v  ~/Documents/Programming/yuhaiin/yuhaiin_linux_amd64v3:/usr/bin/yuhaiin -v ${PWD}/yuhaiin-data:/usr/bin/config -v ${PWD}/data:/var/lib/cloudflare-warp --cap-add=NET_ADMIN --device=/dev/net/tun  --sysctl net.ipv6.conf.all.disable_ipv6=0 --sysctl net.ipv4.conf.all.src_valid_mark=1  -p 50052:50051 -p 1082:1082 -p 1082:1082/udp docker-warp
+
+[Install]
+# Start by default on boot
+WantedBy=default.target
